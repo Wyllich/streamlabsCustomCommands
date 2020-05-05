@@ -1,0 +1,1 @@
+﻿var settings = {"Permission": "everyone", "Response": "THE SIZE!", "Cooldown": 1.0, "Minimum": 3.0, "Amplitude": 40.0, "Command": "!size"};

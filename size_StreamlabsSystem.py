@@ -13,6 +13,7 @@ clr.AddReference("IronPython.Modules.dll")
 #   Import your Settings class
 from MathsHelpers import generateRandomSizeInCm, convertFromCmToInch
 from PPSettings import PPSetting
+from GigantismSettings import GigantismSettings
 
 #---------------------------
 #   [Required] Script Information
@@ -28,27 +29,33 @@ Version = "1.0.0.0"
 #---------------------------
 global SettingsFile
 SettingsFile = ""
+global GigantismSettingsFile
+GigantismSettingsFile = ""
 global ScriptSettings
 ScriptSettings = PPSetting()
+global GigantismSetting
+GigantismSetting = GigantismSettings()
 
 #---------------------------
 #   [Required] Initialize Data (Only called on load)
 #---------------------------
 def Init():
-    global SettingsFile
+    global SettingsFile, GigantismSettingsFile
     #   Create Settings Directory
     directory = os.path.join(os.path.dirname(__file__), "Settings")
     if not os.path.exists(directory):
         os.makedirs(directory)
 
     SettingsFile = os.path.join(os.path.dirname(__file__), "Settings\ppsettings.json")
+    GigantismSettingsFile = os.path.join(os.path.dirname(__file__), "Settings\gigantismsettings.json")
+    
     return
 
 #---------------------------
 #   [Required] Execute Data / Process messages
 #---------------------------
 def Execute(data):
-    global ScriptSettings
+    global ScriptSettings, GigantismSetting
 
     if not data.IsChatMessage() or not data.IsFromTwitch():
         return
@@ -58,8 +65,13 @@ def Execute(data):
     
     #   PP Settings are read everytime a command is caught to allow parameters manipulation through hugifyM and hugifyA
     ScriptSettings = PPSetting(SettingsFile)
+    GigantismSetting = GigantismSettings(GigantismSettingsFile)
 
-    sizeInCm = generateRandomSizeInCm(ScriptSettings.Amplitude, ScriptSettings.Minimum)
+    isUserGiant = (data.UserName.lower() in GigantismSetting.Whitelist) if GigantismSetting.Whitelist else 0
+    amp = 2*ScriptSettings.Amplitude if isUserGiant else ScriptSettings.Amplitude
+    min = (ScriptSettings.Minimum+20) if isUserGiant else ScriptSettings.Minimum
+    
+    sizeInCm = generateRandomSizeInCm(amp, min)
     sizeInInches = convertFromCmToInch(sizeInCm)
 
     chatMsg = "Hey "+data.User+"! Your PP size today is ... yuukeyEmilia ..."+str(sizeInCm)+" cm (or "+str(sizeInInches)+" inches) yuukeyEmilia"

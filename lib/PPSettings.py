@@ -10,7 +10,7 @@ class PPSetting(object):
 		except:
 			self.Command = "!size"
 			self.Response = "I can't see. Sorry."
-			self.Minimum = 13.0
+			self.Minimum = 3.0
 			self.Amplitude = 40.0
 			self.Permission = "everyone"
 

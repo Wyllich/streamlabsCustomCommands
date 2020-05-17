@@ -59,6 +59,9 @@ def Execute(data):
     if not ScriptSettings.Command in data.Message:
         return
 
+    if not Parent.HasPermission(data.User, ScriptSettings.Permission, ""):
+        return
+    
     ScriptSettings = GigantismSettings(SettingsFile)
 
     chatMsg = ""

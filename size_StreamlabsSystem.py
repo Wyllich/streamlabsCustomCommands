@@ -11,7 +11,7 @@ clr.AddReference("IronPython.SQLite.dll")
 clr.AddReference("IronPython.Modules.dll")
 
 #   Import your Settings class
-from MathsHelpers import generateRandomSizeInCm, convertFromCmToInch
+from MathsHelpers import generateRandomSizeInCm, convertFromCmToInch, roundToSetDecimalPlace
 from PPSettings import PPSetting
 from GigantismSettings import GigantismSettings
 
@@ -71,8 +71,9 @@ def Execute(data):
     amp = 2*ScriptSettings.Amplitude if isUserGiant else ScriptSettings.Amplitude
     min = (ScriptSettings.Minimum+20) if isUserGiant else ScriptSettings.Minimum
     
-    sizeInCm = generateRandomSizeInCm(amp, min)
-    sizeInInches = convertFromCmToInch(sizeInCm)
+    rawSizeInCm = generateRandomSizeInCm(amp, min)
+    sizeInCm = roundToSetDecimalPlace(rawSizeInCm, 2)
+    sizeInInches = roundToSetDecimalPlace(convertFromCmToInch(rawSizeInCm), 2)
 
     chatMsg = "Hey "+data.User+"! Your PP size today is ... yuukeyEmilia ..."+str(sizeInCm)+" cm (or "+str(sizeInInches)+" inches) yuukeyEmilia"
     Parent.SendStreamMessage(chatMsg)

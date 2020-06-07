@@ -1,0 +1,1 @@
+﻿var settings = { "Permission": "everyone", "Response": "Currencies around the world", "Cooldown": 1.0, "Command": "!currency" };

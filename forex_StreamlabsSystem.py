@@ -14,7 +14,9 @@ clr.AddReference("IronPython.SQLite.dll")
 clr.AddReference("IronPython.Modules.dll")
 
 #   Import your Settings class
+from MathsHelpers import roundToSetDecimalPlace
 from ForexSettings import ForexSettings
+
 
 #---------------------------
 #   [Required] Script Information
@@ -93,11 +95,11 @@ def Execute(data):
             Parent.SendStreamMessage("Instead, here are your request of "+ objectToBePriced+ " in different currencies:")
             allQuotesMsg = ""
             for availQuoteCurrency in availableQuotes:
-                priceQuoteCurrency = availableQuotes[availQuoteCurrency]*float(priceBaseCurrency)
+                priceQuoteCurrency = roundToSetDecimalPlace(availableQuotes[availQuoteCurrency]*float(priceBaseCurrency), 3)
                 allQuotesMsg += str(priceQuoteCurrency)+ " "+availQuoteCurrency + "|"
             Parent.SendStreamMessage(allQuotesMsg)
         else:
-            priceQuoteCurrency = availableQuotes[quoteCurrency]*float(priceBaseCurrency)
+            priceQuoteCurrency = roundToSetDecimalPlace(availableQuotes[quoteCurrency]*float(priceBaseCurrency),3)
             Parent.SendStreamMessage(objectToBePriced + " of " + priceBaseCurrency+" "+baseCurrency+" is worth " + str(priceQuoteCurrency)+" "+quoteCurrency+ " as of "+date)  
 
         return
@@ -121,7 +123,8 @@ def Execute(data):
         if not quoteCurrency in availableQuotes:
             Parent.SendStreamMessage("Sorry, there is no quote available from "+baseCurrency+" to "+quoteCurrency)
 
-        Parent.SendStreamMessage(originalPrice+" "+baseCurrency+" is equal to " + str(availableQuotes[quoteCurrency]*float(originalPrice))+" "+quoteCurrency+", dated from "+date)
+        askedPrice = roundToSetDecimalPlace(availableQuotes[quoteCurrency]*float(originalPrice),3)
+        Parent.SendStreamMessage(originalPrice+" "+baseCurrency+" is equal to " + str(askedPrice)+" "+quoteCurrency+", dated from "+date)
         return
 
 #---------------------------
